@@ -20,10 +20,10 @@ import useTimedMessage from "../hooks/useTimedMessage";
  * Routes -> ProfileForm -> Alert
  */
 
-function ProfileForm() {
+function AddDogForm() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const [formData, setFormData] = useState({
-    first_name: currentUser.first_name,
+    username: currentUser.username,
     last_name: currentUser.last_name,
     email: currentUser.email,
     username: currentUser.username,
@@ -54,18 +54,32 @@ function ProfileForm() {
   async function handleSubmit(evt) {
     evt.preventDefault();
 
-    let profileData = {
-      first_name: formData.first_name, 
-      last_name: formData.last_name,
-      email: formData.email,
-      password: formData.password,
+    // let profileData = {
+    //   first_name: formData.first_name,
+    //   last_name: formData.last_name,
+    //   email: formData.email,
+    //   password: formData.password,
+    // };
+
+    let dogData = {
+      username: formData.username,
+      name: formData.name,
+      age: formData.age,
+      breed: formData.breed,
+      gender: formData.gender,
+      image: formData.image,
     };
 
+
+
+
+
     let username = formData.username;
+    dogData.age = parseInt(dogData.age);
     let updatedUser;
 
     try {
-      updatedUser = await PuphubApi.saveProfile(username, profileData);
+      updatedUser = await PuphubApi.addDog(dogData, username);
     } catch (errors) {
       debugger;
       setFormErrors(errors);
@@ -92,7 +106,7 @@ function ProfileForm() {
 
   return (
       <div className="col-md-6 col-lg-4 offset-md-3 offset-lg-4">
-        <h3>Profile</h3>
+        <h3>Add Dog</h3>
         <div className="card">
           <div className="card-body">
             <form>
@@ -101,34 +115,53 @@ function ProfileForm() {
                 <p className="form-control-plaintext">{formData.username}</p>
               </div>
               <div className="form-group">
-                <label>First Name</label>
+                <label>Dogs Name</label>
                 <input
-                    name="first_name"
+                    name="name"
                     className="form-control"
-                    value={formData.first_name}
+                    value={formData.name}
                     onChange={handleChange}
                 />
               </div>
               <div className="form-group">
-                <label>Last Name</label>
+                <label>Age</label>
                 <input
-                    name="last_name"
+                    name="age"
+                    type="number"
                     className="form-control"
-                    value={formData.last_name}
+                    value={formData.age}
                     onChange={handleChange}
                 />
               </div>
               <div className="form-group">
-                <label>Email</label>
+                <label>Breed</label>
                 <input
-                    name="email"
+                    name="breed"
                     className="form-control"
-                    value={formData.email}
+                    value={formData.breed}
                     onChange={handleChange}
                 />
               </div>
               <div className="form-group">
-                <label>Confirm password to make changes:</label>
+                <label>Gender</label>
+                <input
+                    name="gender"
+                    className="form-control"
+                    value={formData.gender}
+                    onChange={handleChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Image</label>
+                <input
+                    name="image"
+                    className="form-control"
+                    value={formData.image}
+                    onChange={handleChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Confirm password to add dog:</label>
                 <input
                     type="password"
                     name="password"
@@ -151,7 +184,7 @@ function ProfileForm() {
                   className="btn btn-primary btn-block mt-4"
                   onClick={handleSubmit}
               >
-                Save Changes
+                Add Dog
               </button>
             </form>
           </div>
@@ -160,4 +193,4 @@ function ProfileForm() {
   );
 }
 
-export default ProfileForm;
+export default AddDogForm;

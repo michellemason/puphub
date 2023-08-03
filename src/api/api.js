@@ -41,7 +41,23 @@ class PuphubApi {
     return res.user;
   }
 
-  /** Get dogs (filtered by name if not undefined) */
+    /** Add a dog */
+
+  static async addDog(data, username) {
+    let res = await this.request(`dogs/${username}`, data, "post");
+    return res.token;
+  }
+
+ /* Get a users dogs (filtered by username) */
+ /* ASK JULIE ABOUT THIS */
+
+ static async getUsersDogs(username) {
+  let res = await this.request(`dogs/user/${username}`);
+  console.log(res);
+  return res.dogs;
+}
+
+  /** Get dogs (filtered by name if not undefined) */ 
 
   static async getDogs(name) {
     let res = await this.request("dogs", { name });
@@ -52,7 +68,38 @@ class PuphubApi {
 
   static async getDog(id) {
     let res = await this.request(`dogs/${id}`);
-    return res.dogs;
+    // let res = await this.request("dogs", { id });
+
+    console.log(JSON.stringify(res));
+    return res.dog;
+  }
+
+  /** Delete a dog by its ID */
+  // static async deleteDog(id) {
+  //   try {
+  //     await this.request(`dogs/${id}`, {}, "delete");
+  //     console.log(`(API) Deleting this dog with id: ${id}`)
+  //   } catch (err) {
+  //     console.error("Error deleting dog:", err.response);
+  //     throw err.response.data.error.message;
+  //   }
+  // }
+
+  static async deleteDog(id) {
+    try {
+      await this.request(`dogs/${id}`, {}, "delete");
+      console.log(`(API) Deleting this dog with id: ${id}`);
+    } catch (err) {
+      // Check if err.response exists before accessing its properties
+      if (err.response && err.response.data && err.response.data.error) {
+        console.error("Error deleting dog:", err.response.data.error.message);
+        throw err.response.data.error.message;
+      } else {
+        // If the error response is not as expected, throw a generic error
+        console.error("Error deleting dog:", err);
+        throw "An error occurred while deleting the dog.";
+      }
+    }
   }
 
   /** Get list of bookings (filtered by date if not undefined) */

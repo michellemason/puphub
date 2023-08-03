@@ -14,10 +14,10 @@ class Dog {
    *
    * Returns { id, name, age, breed, gender, image }
    *
-   * Throws BadRequestError if company already in database.
+   * Throws BadRequestError if dog already in database.
    * */
 
-  static async create({ name, age, breed, gender, image }) {
+  static async create({ name, age, breed, gender, image }, user_id) {
     const result = await db.query(
           `INSERT INTO dogs
            (name, age, breed, gender, image, user_id)
@@ -39,7 +39,7 @@ class Dog {
 
 //FIND ALL DOGS BASED ON USER (inner join?)
 // Have Julie check this logic? 
-static async userDogs(username) {
+static async getUsersDogs(username) {
   const userRes = await db.query(
         `SELECT d.id,
                 d.name,
@@ -52,10 +52,10 @@ static async userDogs(username) {
          LEFT JOIN users AS u ON d.user_id = u.username
          WHERE u.username = $1`, [username]);
 
-  const dog = userRes.rows[0];
+  const dog = userRes.rows;
 
   return dog;
-}
+}  
 
 
   /** Find all dogs.

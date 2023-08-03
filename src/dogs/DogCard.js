@@ -7,14 +7,14 @@ import "./DogCard.css";
  *
  * Is rendered by DogList to show a "card" for each dog.
  *
- * DogList -> DogCard
+ * DogList -> DogCard 
  */
 
 function DogCard({ name, breed, age, image, id }) {
   console.debug("DogCard", image);
 
-  return (
-      <Link className="CompanyCard card" to={`/dogs/${id}`}>
+  return ( 
+      <Link className="DogCard card" to={`/dogs/${id}`}>
         <div className="card-body">
           <h6 className="card-title">
             {name}

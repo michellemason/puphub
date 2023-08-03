@@ -1,6 +1,11 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Homepage from "../homepage/Homepage";
+import DogList from "../dogs/DogList";
+import DogCard from "../dogs/DogCard";
+import DogDetail from "../dogs/DogDetail";
+import UsersDogList from "../usersdogs/UsersDogList";
+import BookingList from "../bookings/BookingsList";
 // import CompanyList from "../companies/CompanyList";
 // import JobList from "../jobs/JobList";
 // import CompanyDetail from "../companies/CompanyDetail";
@@ -8,6 +13,7 @@ import LoginForm from "../auth/LoginForm";
 import ProfileForm from "../profiles/ProfileForm";
 import SignupForm from "../auth/SignupForm";
 import PrivateRoute from "./PrivateRoute";
+import AddDogForm from "../profiles/AddDogForm";
 
 /** Site-wide routes.
  *
@@ -40,20 +46,33 @@ function Routes({ login, signup }) {
             <SignupForm signup={signup} />
           </Route>
 
-          {/* <PrivateRoute exact path="/companies">
-            <CompanyList />
+          <PrivateRoute exact path="/dogs">
+            <DogList />
           </PrivateRoute>
 
-          <PrivateRoute exact path="/jobs">
-            <JobList />
+          <PrivateRoute exact path="/bookings">
+            <BookingList />
           </PrivateRoute>
 
-          <PrivateRoute exact path="/companies/:handle">
-            <CompanyDetail />
+          <PrivateRoute exact path="/users-dogs">
+            <UsersDogList />
+          </PrivateRoute>
+          <PrivateRoute exact path="/adddog">
+            <AddDogForm />
+          </PrivateRoute>
+
+{/* USERS DOGS? */}
+          {/* <PrivateRoute exact path="/usersdogs">
+            <UserDogsTest />
           </PrivateRoute> */}
+          
 
-          <PrivateRoute path="/profile">
-            <ProfileForm />
+          <PrivateRoute exact path="/dogs/:id">
+            <DogDetail />
+          </PrivateRoute>
+
+          <PrivateRoute path="/profile"> 
+            <ProfileForm /> 
           </PrivateRoute>
 
           <Redirect to="/" />

@@ -20,7 +20,7 @@ import useTimedMessage from "../hooks/useTimedMessage";
  * Routes -> ProfileForm -> Alert
  */
 
-function ProfileForm() {
+function BookingsForm() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const [formData, setFormData] = useState({
     first_name: currentUser.first_name,
@@ -160,4 +160,5 @@ function ProfileForm() {
   );
 }
 
-export default ProfileForm;
+export default BookingsForm;
+

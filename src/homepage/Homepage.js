@@ -23,7 +23,7 @@ function Homepage() {
           <p className="lead">You're one stop pup drop</p>
           {currentUser
               ? <h2>
-                Welcome Back, {currentUser.firstName || currentUser.username}!
+                Welcome Back, {currentUser.first_name || currentUser.username}!
               </h2>
               : (
                   <p>

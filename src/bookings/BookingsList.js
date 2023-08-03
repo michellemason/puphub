@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SearchForm from "../common/SearchForm";
 import PuphubApi from "../api/api";
-import DogCard from "./DogCard";
+import BookingCard from "./BookingCard";
 import LoadingSpinner from "../common/LoadingSpinner";
 
 /** Show page with list of dogs.
@@ -14,38 +14,36 @@ import LoadingSpinner from "../common/LoadingSpinner";
  * Routes -> { DogCard, SearchForm }
  */
 
-function DogList() {
-  console.debug("DogList");
+function BookingList() {
+  console.debug("BookingList");
 
-  const [dogs, setDogs] = useState(null);
+  const [bookings, setBookings] = useState(null);
 
-  useEffect(function getDogsOnMount() {
+  useEffect(function getBookingsOnMount() {
     console.debug("DogList useEffect getDogsOnMount");
     search();
   }, []);
 
   /** Triggered by search form submit; reloads dogs. */
-  async function search(name) {
-    let dogs = await PuphubApi.getDogs(name);
-    setDogs(dogs);
+  async function search(date) {
+    let bookings = await PuphubApi.getBookings(date);
+    setBookings(bookings);
   }
 
-  if (!dogs) return <LoadingSpinner />;
+//   if (!bookings) return <LoadingSpinner />;
+if (!bookings) return "NO BOOKINGS";
 
   return (
       <div className="CompanyList col-md-8 offset-md-2">
-        <SearchForm searchFor={search} />
-        {dogs.length
+        {bookings.length
             ? (
                 <div className="CompanyList-list">
-                  {dogs.map(d => (
-                      <DogCard
-                          key={d.id}
-                          id={d.id}
-                          name={d.name}
-                          breed={d.breed}
-                          age={d.age}
-                          image={d.image}
+                  {bookings.map(b => (
+                      <BookingCard
+                          key={b.id}
+                          id={b.id}
+                          date={b.date}
+                          
                       />
                   ))}
                 </div>
@@ -56,4 +54,4 @@ function DogList() {
   );
 }
 
-export default DogList;
+export default BookingList;

@@ -10,7 +10,7 @@ class Booking {
   /** Create a booking (from data), update db, return new booking data.
    *
    * data should be { date, dog_id, username }
-   *
+   * 
    * Returns { id, date, dog_id, username }
    *
    * Throws BadRequestError if booking already in database.
