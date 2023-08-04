@@ -28,3 +28,5 @@ CREATE TABLE bookings (
     user_id VARCHAR(25)
         REFERENCES users ON DELETE CASCADE
 );
+
+-- SELECT COUNT * WHERE date = $1 --- how many bookings

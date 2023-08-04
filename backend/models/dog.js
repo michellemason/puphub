@@ -27,7 +27,7 @@ class Dog {
           name,
           age,
           breed,
-          gender,
+          gender, 
           image,
           user_id
         ],
@@ -157,12 +157,13 @@ static async getUsersDogs(username) {
    * Throws NotFoundError if company not found.
    **/
 
-  static async remove(id) {
+  static async remove(id, username) {
     const result = await db.query(
           `DELETE
            FROM dogs
            WHERE id = $1
-           RETURNING id`, [id]);
+           AND user_id = $2
+           RETURNING id`, [id, username]);
     const dog = result.rows[0];
 
     if (!dog) throw new NotFoundError(`No dog found: ${id}`);

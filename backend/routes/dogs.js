@@ -13,7 +13,7 @@ const dogNewSchema = require("../schemas/dogNew.json");
 // const companyUpdateSchema = require("../schemas/companyUpdate.json");
 const dogSearchSchema = require("../schemas/dogSearch.json");
 
-const router = new express.Router();
+const router = new express.Router(); 
  
 
 /** POST / { company } =>  { company }
@@ -137,12 +137,12 @@ router.get("/user/:username", async function (req, res, next) {
  * Authorization: admin or current user
  */
 
-router.delete("/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.delete("/:id", async function (req, res, next) {
   try {
-    await Dog.remove(req.params.id);
+    await Dog.remove(req.params.id, res.locals.user.username);
     return res.json({ deleted: req.params.id });
   } catch (err) {
-    return next(err);
+    return next(err); 
   }
 });
 

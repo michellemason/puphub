@@ -7,7 +7,7 @@
 //  *
 //  * Is rendered by DogList to show a "card" for each dog.
 //  *
-//  * DogList -> DogCard 
+//  * DogList -> DogCard  
 //  */
 
 // function UsersDogCard({ name, breed, age, image, id, onDelete }) {

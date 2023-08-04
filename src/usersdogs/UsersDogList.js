@@ -10,7 +10,7 @@ import LoadingSpinner from "../common/LoadingSpinner";
  * Re-loads filtered dogs on submit from search form.
  *
  * This is routed to at /dogs
- *
+ * 
  * Routes -> { DogCard, SearchForm }
  */
 
