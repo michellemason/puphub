@@ -61,6 +61,21 @@ class Booking {
   }
 
 
+  static async bookingsForDate(date) {
+    const result = await db.query(
+          `SELECT b.id,
+                  b.date,
+                  b.dog_id,
+                  b.user_id
+           FROM bookings b
+           WHERE b.date = $1`,
+           [date]
+    );
+
+    return result.rows;
+  }
+
+
 
   /** Find all bookings.
    *

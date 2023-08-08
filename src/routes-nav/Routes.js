@@ -6,6 +6,7 @@ import DogCard from "../dogs/DogCard";
 import DogDetail from "../dogs/DogDetail";
 import UsersDogList from "../usersdogs/UsersDogList";
 import BookingList from "../bookings/BookingsList";
+import AddBookingForm from "../profiles/AddBookingForm";
 // import CompanyList from "../companies/CompanyList";
 // import JobList from "../jobs/JobList";
 // import CompanyDetail from "../companies/CompanyDetail";
@@ -52,6 +53,10 @@ function Routes({ login, signup }) {
 
           <PrivateRoute exact path="/bookings">
             <BookingList />
+          </PrivateRoute>
+
+          <PrivateRoute exact path="/bookings/add">
+            <AddBookingForm />
           </PrivateRoute>
 
           <PrivateRoute exact path="/users-dogs">

@@ -76,7 +76,7 @@ function ensureCorrectUserOrAdmin(req, res, next) {
     return next(err);
   }
 }
-
+ 
  
 module.exports = {
   authenticateJWT,

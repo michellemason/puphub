@@ -11,6 +11,7 @@ const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const dogRoutes = require("./routes/dogs");
 const usersRoutes = require("./routes/users");
+const bookingRoutes = require("./routes/bookings");
 // const jobsRoutes = require("./routes/jobs");
 
 const morgan = require("morgan");
@@ -25,6 +26,7 @@ app.use(authenticateJWT);
 app.use("/auth", authRoutes);
 app.use("/dogs", dogRoutes);
 app.use("/users", usersRoutes);
+app.use("/bookings", bookingRoutes);
 // app.use("/jobs", jobsRoutes);
 
 

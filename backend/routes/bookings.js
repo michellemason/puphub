@@ -15,6 +15,22 @@ const bookingNewSchema = require("../schemas/bookingNew.json");
 
 const router = express.Router(); 
 
+//Getting dates in correct format (need to update and delete the time of day on it)
+Date.prototype.addDays = function(days) {
+  var date = new Date(this.valueOf());
+  date.setDate(date.getDate() + days);
+  return date;
+}
+
+function getDates(startDate, stopDate) {
+  var dateArray = new Array();
+  var currentDate = startDate;
+  while (currentDate <= stopDate) {
+      dateArray.push(new Date (currentDate));
+      currentDate = currentDate.addDays(1);
+  }
+  return dateArray;
+}
 
 /** POST / { user }  => { user, token }
  *
@@ -72,7 +88,24 @@ const router = express.Router();
  * Authorization required: admin or same user-as-:username
  **/
 
-router.get("/bookings", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.get("/open", async function (req, res, next) {
+  try {
+    //const bookings = await Booking.get(req.params.username);
+    const startDate = new Date(req.query.startDate);
+    const endDate = new Date(req.query.endDate);
+    const dates = getDates(startDate, endDate) 
+    let results = [];
+    for (const date of dates) {
+      const bookings = await Booking.bookingsForDate(date);
+      results.push({ date: date, numBookings: bookings.length, available: 5 - bookings.length })
+    }
+    return res.json( results );
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.get("/", async function (req, res, next) {
   try {
     const bookings = await Booking.get(req.params.username);
     return res.json({ bookings });

@@ -61,7 +61,7 @@ class PuphubApi {
 
   static async getDogs(name) {
     let res = await this.request("dogs", { name });
-    return res.dogs;
+    return res.dogs; 
   }
 
   /** Get details on a dog by id. */

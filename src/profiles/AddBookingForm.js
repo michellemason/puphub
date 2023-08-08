@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import Alert from "../common/Alert";
-import PuphubApi from "../api/api"; 
+import PuphubApi from "../api/api";
 import UserContext from "../auth/UserContext";
 
 // eslint-disable-next-line
@@ -20,7 +20,7 @@ import useTimedMessage from "../hooks/useTimedMessage";
  * Routes -> ProfileForm -> Alert
  */
 
-function AddDogForm() {
+function AddBookingForm() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const [formData, setFormData] = useState({
     username: currentUser.username,
@@ -193,4 +193,4 @@ function AddDogForm() {
   );
 }
 
-export default AddDogForm;
+export default AddBookingForm;
