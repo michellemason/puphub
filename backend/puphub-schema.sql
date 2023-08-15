@@ -20,13 +20,25 @@ CREATE TABLE dogs (
         REFERENCES users ON DELETE CASCADE
 );
  
-CREATE TABLE bookings (
-    id SERIAL PRIMARY KEY,
-    date DATE NOT NULL,
-    dog_id INTEGER 
-        REFERENCES dogs ON DELETE CASCADE,
-    user_id VARCHAR(25)
-        REFERENCES users ON DELETE CASCADE
+CREATE TABLE bookings(
+    id SERIAL NOT NULL,
+    start_date DATE NOT NULL,
+    username VARCHAR(25),
+    end_date DATE NOT NULL,
+    dog_id VARCHAR(25),
+    PRIMARY KEY(id),
+    CONSTRAINT bookings_user_id_fkey FOREIGN KEY(username) 
+        REFERENCES users(username)
 );
+
+
+-- CREATE TABLE bookings (
+--     id SERIAL PRIMARY KEY,
+--     date DATE NOT NULL,
+--     dog_id INTEGER 
+--         REFERENCES dogs ON DELETE CASCADE,
+--     user_id VARCHAR(25)
+--         REFERENCES users ON DELETE CASCADE
+-- );
 
 -- SELECT COUNT * WHERE date = $1 --- how many bookings

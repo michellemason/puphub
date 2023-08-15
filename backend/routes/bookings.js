@@ -11,26 +11,17 @@ const Booking = require("../models/booking");
 const { createToken } = require("../helpers/tokens");
 // const userNewSchema = require("../schemas/userNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
-const bookingNewSchema = require("../schemas/bookingNew.json");
+const bookingSchema = require("../schemas/bookingSchema.json");
 
-const router = express.Router(); 
+const router = express.Router();
 
 //Getting dates in correct format (need to update and delete the time of day on it)
-Date.prototype.addDays = function(days) {
+Date.prototype.addDays = function (days) {
   var date = new Date(this.valueOf());
   date.setDate(date.getDate() + days);
   return date;
 }
 
-function getDates(startDate, stopDate) {
-  var dateArray = new Array();
-  var currentDate = startDate;
-  while (currentDate <= stopDate) {
-      dateArray.push(new Date (currentDate));
-      currentDate = currentDate.addDays(1);
-  }
-  return dateArray;
-}
 
 /** POST / { user }  => { user, token }
  *
@@ -88,26 +79,32 @@ function getDates(startDate, stopDate) {
  * Authorization required: admin or same user-as-:username
  **/
 
-router.get("/open", async function (req, res, next) {
+router.post("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
   try {
-    //const bookings = await Booking.get(req.params.username);
-    const startDate = new Date(req.query.startDate);
-    const endDate = new Date(req.query.endDate);
-    const dates = getDates(startDate, endDate) 
-    let results = [];
-    for (const date of dates) {
-      const bookings = await Booking.bookingsForDate(date);
-      results.push({ date: date, numBookings: bookings.length, available: 5 - bookings.length })
+    const validator = jsonschema.validate(req.body, bookingSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
     }
-    return res.json( results );
-  } catch (err) {
-    return next(err);
-  }
-});
+    const { start_date, end_date } = req.body;
 
-router.get("/", async function (req, res, next) {
+    const isFullyBooked = await Booking.isDateRangeFullyBooked(start_date, end_date);
+
+    if (isFullyBooked) {
+      throw new BadRequestError({ error: "Selected date range is fully booked." });
+    }
+    const booking = await Booking.createBooking(req.body, req.params.username);
+    return res.status(201).json({ booking });
+  } catch (error) {
+    return next(error);
+
+  }
+}
+);
+
+router.get("/:username", async function (req, res, next) {
   try {
-    const bookings = await Booking.get(req.params.username);
+    const bookings = await Booking.userBookings(req.params.username);
     return res.json({ bookings });
   } catch (err) {
     return next(err);
@@ -148,7 +145,7 @@ router.get("/", async function (req, res, next) {
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.delete("booking/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.delete("/:id", async function (req, res, next) {
   try {
     await Booking.remove(req.params.id);
     return res.json({ deleted: req.params.id });
@@ -156,7 +153,6 @@ router.delete("booking/:id", ensureCorrectUserOrAdmin, async function (req, res,
     return next(err);
   }
 });
-
 
 /** POST /[username]/jobs/[id]  { state } => { application }
  *

@@ -70,18 +70,18 @@ function AddDogForm() {
       image: formData.image,
     };
 
-
-
-
-
     let username = formData.username;
     dogData.age = parseInt(dogData.age);
     let updatedUser;
 
     try {
       updatedUser = await PuphubApi.addDog(dogData, username);
+      setSaveConfirmed(true);
+      setTimeout(() => {
+        setSaveConfirmed(false);
+      }, 3000);
     } catch (errors) {
-      debugger;
+      
       setFormErrors(errors);
       return;
     }
@@ -175,10 +175,11 @@ function AddDogForm() {
                   ? <Alert type="danger" messages={formErrors} />
                   : null}
 
-              {saveConfirmed
+              {/* {saveConfirmed
                   ?
                   <Alert type="success" messages={["Updated successfully."]} />
-                  : null}
+                  : null} */}
+              {saveConfirmed && <Alert type="success" messages={["Booking added successfully."]} />}
 
               <button
                   className="btn btn-primary btn-block mt-4"

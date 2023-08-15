@@ -66,8 +66,9 @@ function UsersDogCard({ name, breed, age, image, id, onDelete }) {
             <small>Age: {age}</small>
           </p>
         </div>
+        <button className="btn btn-primary btn-block mt-4" onClick={handleDelete}>Delete Dog</button>
       </Link>
-      <button onClick={handleDelete}>Delete Dog</button>
+      {/* <button onClick={handleDelete}>Delete Dog</button> */}
     </div>
   );
 }

@@ -1,195 +1,117 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Alert from "../common/Alert";
 import PuphubApi from "../api/api";
 import UserContext from "../auth/UserContext";
 
-// eslint-disable-next-line
-import useTimedMessage from "../hooks/useTimedMessage";
-
-/** Profile editing form.
- *
- * Displays profile form and handles changes to local form state.
- * Submitting the form calls the API to save, and triggers user reloading
- * throughout the site.
- *
- * Confirmation of a successful save is normally a simple <Alert>, but
- * you can opt-in to our fancy limited-time-display message hook,
- * `useTimedMessage`, but switching the lines below.
- *
- * Routed as /profile
- * Routes -> ProfileForm -> Alert
- */
-
 function AddBookingForm() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
+  const [dogs, setDogs] = useState([]);
   const [formData, setFormData] = useState({
-    username: currentUser.username,
-    last_name: currentUser.last_name,
-    email: currentUser.email,
-    username: currentUser.username,
-    password: "",
+    username: currentUser.name,
+    dog_id: "",
+    start_date: "",
+    end_date: "",
   });
   const [formErrors, setFormErrors] = useState([]);
-
-  // switch to use our fancy limited-time-display message hook
   const [saveConfirmed, setSaveConfirmed] = useState(false);
-  // const [saveConfirmed, setSaveConfirmed] = useTimedMessage()
 
-  console.debug(
-      "ProfileForm",
-      "currentUser=", currentUser,
-      "formData=", formData,
-      "formErrors=", formErrors,
-      "saveConfirmed=", saveConfirmed,
-  );
-
-  /** on form submit:
-   * - attempt save to backend & report any errors
-   * - if successful
-   *   - clear previous error messages and password
-   *   - show save-confirmed message
-   *   - set current user info throughout the site
-   */
+  useEffect(function getUsersDogsOnMount() {
+    async function search() {
+      try {
+        const dogsData = await PuphubApi.getUsersDogs(currentUser.username);
+        setDogs(dogsData);
+      } catch (error) {
+        console.error("Error fetching user's dogs:", error);
+      }
+    }
+    search();
+  }, [currentUser.username]);
 
   async function handleSubmit(evt) {
     evt.preventDefault();
 
-    // let profileData = {
-    //   first_name: formData.first_name,
-    //   last_name: formData.last_name,
-    //   email: formData.email,
-    //   password: formData.password,
-    // };
-
-    let dogData = {
-      username: formData.username,
-      name: formData.name,
-      age: formData.age,
-      breed: formData.breed,
-      gender: formData.gender,
-      image: formData.image,
+    const bookingData = {
+      username: currentUser.username,
+      dog_id: formData.dog_id,
+      start_date: formData.start_date,
+      end_date: formData.end_date,
     };
 
-
-
-
-
-    let username = formData.username;
-    dogData.age = parseInt(dogData.age);
-    let updatedUser;
-
     try {
-      updatedUser = await PuphubApi.addDog(dogData, username);
-    } catch (errors) {
-      debugger;
-      setFormErrors(errors);
-      return;
+      // Call API to add booking
+      await PuphubApi.addBooking(bookingData, currentUser.username);
+      setSaveConfirmed(true);
+      setTimeout(() => {
+        setSaveConfirmed(false);
+      }, 3000);
+    } catch (error) {
+      setFormErrors([error[0].error]);
     }
-
-    setFormData(f => ({ ...f, password: "" }));
-    setFormErrors([]);
-    setSaveConfirmed(true);
-
-    // trigger reloading of user information throughout the site
-    setCurrentUser(updatedUser);
   }
 
-  /** Handle form data changing */
   function handleChange(evt) {
     const { name, value } = evt.target;
-    setFormData(f => ({
-      ...f,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value,
     }));
-    setFormErrors([]);
   }
 
   return (
-      <div className="col-md-6 col-lg-4 offset-md-3 offset-lg-4">
-        <h3>Add Dog</h3>
-        <div className="card">
-          <div className="card-body">
-            <form>
-              <div className="form-group">
-                <label>Username</label>
-                <p className="form-control-plaintext">{formData.username}</p>
-              </div>
-              <div className="form-group">
-                <label>Dogs Name</label>
-                <input
-                    name="name"
-                    className="form-control"
-                    value={formData.name}
-                    onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Age</label>
-                <input
-                    name="age"
-                    type="number"
-                    className="form-control"
-                    value={formData.age}
-                    onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Breed</label>
-                <input
-                    name="breed"
-                    className="form-control"
-                    value={formData.breed}
-                    onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Gender</label>
-                <input
-                    name="gender"
-                    className="form-control"
-                    value={formData.gender}
-                    onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Image</label>
-                <input
-                    name="image"
-                    className="form-control"
-                    value={formData.image}
-                    onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Confirm password to add dog:</label>
-                <input
-                    type="password"
-                    name="password"
-                    className="form-control"
-                    value={formData.password}
-                    onChange={handleChange}
-                />
-              </div>
-
-              {formErrors.length
-                  ? <Alert type="danger" messages={formErrors} />
-                  : null}
-
-              {saveConfirmed
-                  ?
-                  <Alert type="success" messages={["Updated successfully."]} />
-                  : null}
-
-              <button
-                  className="btn btn-primary btn-block mt-4"
-                  onClick={handleSubmit}
+    <div className="col-md-6 col-lg-4 offset-md-3 offset-lg-4">
+      <h3>Add Booking</h3>
+      <div className="card">
+        <div className="card-body">
+          <form>
+            <div className="form-group">
+              <label>Select Dog</label>
+              <select
+                name="dog_id"
+                className="form-control"
+                value={formData.dog_id}
+                onChange={handleChange}
               >
-                Add Dog
-              </button>
-            </form>
-          </div>
+                <option value="">Select a Dog</option>
+                {dogs.map((dog) => (
+                  <option key={dog.id} value={dog.name}>
+                    {dog.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Starting Date</label>
+              <input
+                type="date"
+                name="start_date"
+                className="form-control"
+                value={formData.start_date}
+                onChange={handleChange}
+                min={new Date().toISOString().split("T")[0]}
+              />
+            </div>
+            <div className="form-group">
+              <label>Ending Date</label>
+              <input
+                type="date"
+                name="end_date"
+                className="form-control"
+                value={formData.end_date}
+                onChange={handleChange}
+                min={formData.start_date}
+              />
+            </div>
+
+            {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
+            {saveConfirmed && <Alert type="success" messages={["Booking added successfully."]} />}
+
+            <button className="btn btn-primary btn-block mt-4" onClick={handleSubmit}>
+              Add Booking
+            </button>
+          </form>
         </div>
       </div>
+    </div>
   );
 }
 

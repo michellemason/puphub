@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
+const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3002";
 
 /** API Class.
  *
@@ -20,8 +20,8 @@ class PuphubApi {
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${PuphubApi.token}` };
     const params = (method === "get")
-        ? data
-        : {};
+      ? data
+      : {};
 
     try {
       return (await axios({ url, method, data, params, headers })).data;
@@ -41,27 +41,26 @@ class PuphubApi {
     return res.user;
   }
 
-    /** Add a dog */
+  /** Add a dog */
 
   static async addDog(data, username) {
     let res = await this.request(`dogs/${username}`, data, "post");
     return res.token;
   }
 
- /* Get a users dogs (filtered by username) */
- /* ASK JULIE ABOUT THIS */
+  /* Get a users dogs (filtered by username) */
+  /* ASK JULIE ABOUT THIS */
 
- static async getUsersDogs(username) {
-  let res = await this.request(`dogs/user/${username}`);
-  console.log(res);
-  return res.dogs;
-}
+  static async getUsersDogs(username) {
+    let res = await this.request(`dogs/user/${username}`);
+    return res.dogs;
+  }
 
-  /** Get dogs (filtered by name if not undefined) */ 
+  /** Get dogs (filtered by name if not undefined) */
 
   static async getDogs(name) {
     let res = await this.request("dogs", { name });
-    return res.dogs; 
+    return res.dogs;
   }
 
   /** Get details on a dog by id. */
@@ -102,12 +101,36 @@ class PuphubApi {
     }
   }
 
+  static async deleteBooking(id) {
+    try {
+      await this.request(`bookings/${id}`, {}, "delete");
+      console.log(`(API) Deleting this booking with id: ${id}`);
+    } catch (err) {
+      // Check if err.response exists before accessing its properties
+      if (err.response && err.response.data && err.response.data.error) {
+        console.error("Error deleting booking:", err.response.data.error.message);
+        throw err.response.data.error.message;
+      } else {
+        // If the error response is not as expected, throw a generic error
+        console.error("Error deleting booking:", err);
+        throw "An error occurred while deleting the booking.";
+      }
+    }
+  }
   /** Get list of bookings (filtered by date if not undefined) */
 
-  static async getBookings(date) {
-    let res = await this.request("bookings", { date });
-    return res.date;
+  static async getBookings(username) {
+    let res = await this.request(`bookings/${username}`);
+    return res.bookings;
   }
+
+  /** Add booking */
+
+  static async addBooking(data, username) {
+    let res = await this.request(`bookings/${username}`, data, "post");
+    return res.booking;
+  }
+
 
   /** Get token for login from username, password. */
 
@@ -131,5 +154,5 @@ class PuphubApi {
   }
 }
 
- 
+
 export default PuphubApi;

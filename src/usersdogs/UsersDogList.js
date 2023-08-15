@@ -22,6 +22,7 @@ function UsersDogList() {
 );
 
   const [dogs, setDogs] = useState(null);
+  const [saveConfirmed, setSaveConfirmed] = useState(false);
 
   useEffect(function getUsersDogsOnMount() {
     console.debug("DogList useEffect getDogsOnMount");
@@ -37,7 +38,11 @@ function UsersDogList() {
   const handleDelete = async (id) => {
     console.log("Deleting dog with id:", id); 
     await PuphubApi.deleteDog(id);
+    setSaveConfirmed(true);
     setDogs(prevDogs => prevDogs.filter(d => d.id !== id));
+    setTimeout(() => {
+      setSaveConfirmed(false);
+    }, 3000);
   }
 
 
