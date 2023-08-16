@@ -1,32 +1,50 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import "./BookingCard.css";
+import PuphubApi from "../api/api";
 
+function BookingCard({ id, username, dog_id, start_date, end_date, onDelete }) {
+  const [dog, setDog] = useState(null);
 
-/** Show limited information about a dog
- *
- * Is rendered by DogList to show a "card" for each dog.
- *
- * DogList -> DogCard
- */
+  useEffect(function getDogDetails() {
+    async function getDog() {
+      const fetchedDog = await PuphubApi.getDog(dog_id);
+      setDog(fetchedDog);
+    }
 
-function BookingCard({ id, username, image, dog_id, start_date, end_date, onDelete }) {
+    getDog();
+  }, [dog_id]);
+
   const handleDelete = () => {
     onDelete(id);
   };
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <div className="BookingCard card">
-      <div classNmae="card-body">
+      <div className="card-body">
         <h6 className="card-title ml-3 mt-3">
-          {dog_id}
+          {dog && dog.image && (
+            <img
+              src={dog.image}
+              alt={dog.name}
+              className="float-right ml-5"
+            />
+          )}
           <br />
-          <p>Start date:</p>{new Date(start_date).toISOString().split("T")[0]}
+          Dog: {dog && dog.name}
           <br />
-          <p>End Date: </p>{new Date(end_date).toISOString().split("T")[0]}
+          Start date: {formatDate(start_date)}
+          <br />
+          End Date: {formatDate(end_date)}
         </h6>
-      </div >
-      <button className="btn btn-primary btn-block mt-4" onClick={handleDelete}>Delete Booking</button>
-
+      </div>
+      <button className="btn btn-primary btn-block mt-4" onClick={handleDelete}>
+        Delete Booking
+      </button>
     </div>
   );
 }

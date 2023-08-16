@@ -22,7 +22,6 @@ function BookingList() {
   const [bookings, setBookings] = useState(null);
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const [saveConfirmed, setSaveConfirmed] = useState(false);
-  console.log(currentUser.username)
   useEffect(function getBookingsOnMount() {
     console.debug("DogList useEffect getDogsOnMount");
     search();
@@ -37,7 +36,6 @@ function BookingList() {
     }, 3000);
   }
   const handleDelete = async (id) => {
-    console.log("Deleting booking with id:", id);
     await PuphubApi.deleteBooking(id);
     setSaveConfirmed(true);
     setBookings(prevBookings => prevBookings.filter(d => d.id !== id));
@@ -70,7 +68,7 @@ function BookingList() {
             {saveConfirmed && <Alert type="success" messages={["Booking deleted successfully."]} />}
           </div>
         ) : (
-          <p className="lead">Sorry, no results were found!</p>
+          <p className="lead">Sorry, no bookings were found!</p>
         )}
     </div>
   );

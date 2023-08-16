@@ -73,7 +73,7 @@ function AddBookingForm() {
               >
                 <option value="">Select a Dog</option>
                 {dogs.map((dog) => (
-                  <option key={dog.id} value={dog.name}>
+                  <option key={dog.id} value={dog.id}>
                     {dog.name}
                   </option>
                 ))}
